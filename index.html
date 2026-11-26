@@ -30,6 +30,13 @@ html body #ctrl button{background:linear-gradient(#ff9ccf,#e86bb0);box-shadow:0 
 #screen iframe,#noise{position:absolute;inset:0;width:100%;height:100%;border:0}
 #screen iframe{pointer-events:none;transform:scale(1.02);animation:flick 4s infinite}
 #noise{image-rendering:pixelated;display:none}
+html body #screen iframe{inset:auto;left:50%;top:50%;width:175%;height:auto;aspect-ratio:16/9;transform:translate(-50%,-50%);animation:flick 4s infinite}
+html body #tv:fullscreen #screen iframe{width:max(118vw,calc(132vh*1.7778))}
+html body.clean .crt{display:none}
+html body.clean #noise{display:none!important}
+html body.clean #screen iframe{animation:none}
+html body.clean #screen{border-radius:8px}
+html body #ctrl #fx{font-size:16px}
 .crt{position:absolute;inset:0;pointer-events:none;z-index:4;
  background:repeating-linear-gradient(transparent 0 2px,rgba(0,0,0,.28) 2px 3px),
  radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.6) 100%);
@@ -72,7 +79,7 @@ html body #ctrl button{background:linear-gradient(#ff9ccf,#e86bb0);box-shadow:0 
    <div id="osd"></div>
   </div>
   <div id="ctrl">
-   <button id="pw">On</button><button id="dn">-</button><button id="up">+</button><button id="fs">⛶</button>
+   <button id="pw">On</button><button id="fx" title="Efectos de tele antigua">FX ✓</button><button id="dn">-</button><button id="up">+</button><button id="fs">⛶</button>
   </div>
  </div>
 </div>
@@ -95,7 +102,7 @@ function tune(){
   var id=CH[ch].id;
   frame=document.createElement('iframe');
   frame.allow='autoplay; encrypted-media; picture-in-picture; web-share';frame.referrerPolicy='strict-origin-when-cross-origin';frame.setAttribute('allowfullscreen','');
-  frame.src='https://www.youtube.com/embed/'+id+'?autoplay=1&loop=1&playlist='+id+'&controls=0&modestbranding=1&rel=0&playsinline=1&disablekb=1';
+  frame.src='https://www.youtube.com/embed/'+id+'?autoplay=1&loop=1&playlist='+id+'&controls=0&modestbranding=1&rel=0&playsinline=1&disablekb=1&fs=0&iv_load_policy=3&showinfo=0&cc_load_policy=0';
   scr.insertBefore(frame,$('hint'));
   setTimeout(function(){nz.style.display='none';cancelAnimationFrame(anim)},900);
  },850);
@@ -109,6 +116,7 @@ function power(){
 }
 function go(n){ch=(n+CH.length)%CH.length;if(on)tune();else{power()}}
 $('pw').onclick=power;
+$('fx').onclick=function(){var c=document.body.classList.toggle('clean');this.textContent=c?'FX ✗':'FX ✓'};
 $('up').onclick=function(){go(ch+1)};
 $('dn').onclick=function(){go(ch-1)};
 $('fs').onclick=function(){if(document.fullscreenElement)document.exitFullscreen();else if(tv.requestFullscreen)tv.requestFullscreen()};
@@ -118,6 +126,7 @@ document.addEventListener('keydown',function(e){
  if(e.key==='ArrowDown'||e.key==='ArrowLeft')go(ch-1);
  if(e.key==='1'||e.key==='2'||e.key==='3')go(+e.key-1);
  if(e.key==='f')$('fs').onclick();
+ if(e.key==='x')$('fx').onclick();
 });
 </script>
 </body>
